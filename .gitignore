@@ -1,0 +1,41 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python environments and tooling
+.venv/
+venv/
+env/
+ENV/
+.env
+.env.*
+!.env.example
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+db.sqlite3
+
+# Vue.js / Node.js
+node_modules/
+/.pnp
+.pnp.js
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+.npm/
+.vite/
+coverage/
+dist/
+
+# Local IDE and OS files
+.DS_Store
+.idea/
+.vscode/
+*.swp
