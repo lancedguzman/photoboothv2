@@ -1,11 +1,16 @@
-<script setup></script>
+<script setup>
+// No script needed for basic routing setup
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <router-view></router-view>
 </template>
 
-<style scoped></style>
+<style>
+/* Reset basic margins so the background colors fill the screen */
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+</style>
