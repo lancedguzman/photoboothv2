@@ -39,3 +39,9 @@ dist/
 .idea/
 .vscode/
 *.swp
+
+# Project Specific
+*.png
+*.jpg
+*.jpeg
+structure.txt
