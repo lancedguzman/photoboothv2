@@ -1,24 +1,24 @@
 <template>
   <div class="landing-page">
     <!-- Top Left GDG Logo -->
-    <img src="http://localhost:8000/media/assets/gdg-logo.svg" class="gdg-logo" alt="GDG Logo" />
+    <img src="https://gdgloyola.pythonanywhere.com/media/assets/gdg-logo.svg" class="gdg-logo" alt="GDG Logo" />
 
     <!-- Background Clouds -->
-    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-tl" alt="cloud" />
-    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-tr" alt="cloud" />
-    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-mr" alt="cloud" />
-    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-bl" alt="cloud" />
+    <img src="https://gdgloyola.pythonanywhere.com/media/assets/cloud.svg" class="cloud cloud-tl" alt="cloud" />
+    <img src="https://gdgloyola.pythonanywhere.com/media/assets/cloud.svg" class="cloud cloud-tr" alt="cloud" />
+    <img src="https://gdgloyola.pythonanywhere.com/media/assets/cloud.svg" class="cloud cloud-mr" alt="cloud" />
+    <img src="https://gdgloyola.pythonanywhere.com/media/assets/cloud.svg" class="cloud cloud-bl" alt="cloud" />
 
     <!-- Center Title Image -->
     <div class="content-wrapper">
-      <img src="http://localhost:8000/media/assets/title.svg" class="main-title" alt="Capture your Googley moment!" />
+      <img src="https://gdgloyola.pythonanywhere.com/media/assets/title.svg" class="main-title" alt="Capture your Googley moment!" />
     </div>
 
     <!-- Bottom Right Controls -->
     <div class="controls-wrapper">
-      <img src="http://localhost:8000/media/assets/googley-left.svg" class="android-mascot" alt="Android Mascot" />
+      <img src="https://gdgloyola.pythonanywhere.com/media/assets/googley-left.svg" class="android-mascot" alt="Android Mascot" />
       <button class="start-btn" @click="goToCapture">
-        <img src="http://localhost:8000/media/assets/start-button.svg" alt="Start" />
+        <img src="https://gdgloyola.pythonanywhere.com/media/assets/start-button.svg" alt="Start" />
       </button>
     </div>
   </div>

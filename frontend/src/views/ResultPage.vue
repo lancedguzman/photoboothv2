@@ -1,13 +1,13 @@
 <template>
   <div class="result-page">
     <!-- Background Clouds -->
-    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-top" alt="cloud" />
-    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-bottom" alt="cloud" />
+    <img src="https://gdgloyola.pythonanywhere.com/media/assets/cloud.svg" class="cloud cloud-top" alt="cloud" />
+    <img src="https://gdgloyola.pythonanywhere.com/media/assets/cloud.svg" class="cloud cloud-bottom" alt="cloud" />
 
     <div class="content-wrapper">
       <div class="header">
         <h1 class="title">your</h1>
-        <img src="http://localhost:8000/media/assets/googley-logo.svg" alt="Googley" class="header-logo" />
+        <img src="https://gdgloyola.pythonanywhere.com/media/assets/googley-logo.svg" alt="Googley" class="header-logo" />
         <h1 class="title">picture is ready!</h1>
       </div>
 
@@ -32,7 +32,7 @@
 
       <!-- Updated Finish Button -->
       <button class="home-btn" @click="goHome">
-        <img src="http://localhost:8000/media/assets/finish-button.svg" alt="Finish" class="finish-img" />
+        <img src="https://gdgloyola.pythonanywhere.com/media/assets/finish-button.svg" alt="Finish" class="finish-img" />
       </button>
     </div>
   </div>
@@ -50,7 +50,7 @@ const isLoading = ref(true)
 
 const fetchSessionData = async (id) => {
   try {
-    const response = await fetch(`http://localhost:8000/api/sessions/${id}/`)
+    const response = await fetch(`https://gdgloyola.pythonanywhere.com/api/sessions/${id}/`)
     if (!response.ok) throw new Error('Session not found')
 
     sessionData.value = await response.json()

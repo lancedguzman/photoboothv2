@@ -1,13 +1,13 @@
 <template>
   <div class="capture-page">
     <!-- Top Left GDG Logo -->
-    <img src="http://localhost:8000/media/assets/gdg-logo.svg" class="decor gdg-logo" alt="GDG Logo" />
+    <img src="https://gdgloyola.pythonanywhere.com/media/assets/gdg-logo.svg" class="decor gdg-logo" alt="GDG Logo" />
 
     <!-- Background Clouds -->
-    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-tl" alt="cloud" />
-    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-tr" alt="cloud" />
-    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-ml" alt="cloud" />
-    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-mr" alt="cloud" />
+    <img src="https://gdgloyola.pythonanywhere.com/media/assets/cloud.svg" class="cloud cloud-tl" alt="cloud" />
+    <img src="https://gdgloyola.pythonanywhere.com/media/assets/cloud.svg" class="cloud cloud-tr" alt="cloud" />
+    <img src="https://gdgloyola.pythonanywhere.com/media/assets/cloud.svg" class="cloud cloud-ml" alt="cloud" />
+    <img src="https://gdgloyola.pythonanywhere.com/media/assets/cloud.svg" class="cloud cloud-mr" alt="cloud" />
 
     <div class="main-layout">
       <!-- Main camera view -->
@@ -17,7 +17,7 @@
         <!-- Dynamic Cloud SVG Countdown -->
         <img
           v-if="isCountingDown && countdownNumber > 0 && !isSubmitting"
-          :src="`http://localhost:8000/media/assets/cloud-${countdownNumber}.svg`"
+          :src="`https://gdgloyola.pythonanywhere.com/media/assets/cloud-${countdownNumber}.svg`"
           class="countdown-image"
           alt="countdown"
         />
@@ -38,27 +38,27 @@
     </div>
 
     <!-- Bottom Left Decorations -->
-    <img src="http://localhost:8000/media/assets/blue-box.svg" class="decor blue-box" alt="blue box" />
-    <img src="http://localhost:8000/media/assets/googley-laptop.svg" class="decor laptop-robot" alt="laptop robot" />
-    <img src="http://localhost:8000/media/assets/yellow-box.svg" class="decor yellow-box-robot" alt="yellow box robot" />
+    <img src="https://gdgloyola.pythonanywhere.com/media/assets/blue-box.svg" class="decor blue-box" alt="blue box" />
+    <img src="https://gdgloyola.pythonanywhere.com/media/assets/googley-laptop.svg" class="decor laptop-robot" alt="laptop robot" />
+    <img src="https://gdgloyola.pythonanywhere.com/media/assets/yellow-box.svg" class="decor yellow-box-robot" alt="yellow box robot" />
 
     <!-- Bottom Right Decoration -->
-    <img src="http://localhost:8000/media/assets/blimp.svg" class="decor blimp" alt="blimp" />
+    <img src="https://gdgloyola.pythonanywhere.com/media/assets/blimp.svg" class="decor blimp" alt="blimp" />
 
     <!-- Floating Capture Button & Finish Button -->
     <div class="controls">
       <button class="capture-btn" @click="startSequence" :disabled="isSequenceActive">
-        <img src="http://localhost:8000/media/assets/capture-button.svg" alt="Capture" class="capture-img" />
+        <img src="https://gdgloyola.pythonanywhere.com/media/assets/capture-button.svg" alt="Capture" class="capture-img" />
       </button>
 
-      <!-- Updated Finish Button using SVG and awaiting user input[cite: 59] -->
+      <!-- Updated Finish Button using SVG and awaiting user input -->
       <button
         v-if="!isSequenceActive && photoStore.photos.some(p => p)"
         class="finish-btn"
         @click="finishSession"
         :disabled="isSubmitting"
       >
-        <img src="http://localhost:8000/media/assets/finish-button.svg" alt="Finish" class="finish-img" />
+        <img src="https://gdgloyola.pythonanywhere.com/media/assets/finish-button.svg" alt="Finish" class="finish-img" />
       </button>
     </div>
 
@@ -126,19 +126,19 @@ const startSequence = async () => {
   photoStore.clearPhotos()
 
   for (let i = 0; i < 4; i++) {
-    // Break the automated loop if the user interrupts it to retake a photo[cite: 59]
+    // Break the automated loop if the user interrupts it to retake a photo
     if (!isSequenceActive.value) return
 
     currentShotIndex.value = i
     await runCountdown(3)
 
-    // Check again in case it was interrupted during the 3-second countdown[cite: 59]
+    // Check again in case it was interrupted during the 3-second countdown
     if (!isSequenceActive.value) return
 
     takePicture(i)
   }
 
-  // End the sequence without automatically submitting to ResultPage[cite: 59]
+  // End the sequence without automatically submitting to ResultPage
   if (isSequenceActive.value) {
     isSequenceActive.value = false
   }
@@ -204,7 +204,7 @@ const finishSession = async () => {
       }
     }
 
-    const response = await fetch('http://localhost:8000/api/sessions/create/', {
+    const response = await fetch('https://gdgloyola.pythonanywhere.com/api/sessions/create/', {
       method: 'POST',
       body: formData
     })
@@ -379,7 +379,6 @@ const finishSession = async () => {
   cursor: not-allowed;
 }
 
-/* Updated Finish Button Styles[cite: 59] */
 .finish-btn {
   background: none;
   border: none;
