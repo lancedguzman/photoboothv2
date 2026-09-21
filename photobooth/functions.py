@@ -10,7 +10,7 @@ def generate_session_qr_code(session_instance):
     Generates a QR code pointing to the session's download URL 
     and attaches it to the model instance.
     """
-    base_url = getattr(settings, 'BASE_URL', 'https:gdgloyola.pythonanywhere.com')
+    base_url = getattr(settings, 'BASE_URL', 'https://gdgloyola.pythonanywhere.com')
     download_url = f"{base_url}/api/download/{session_instance.id}/"
     
     qr = qrcode.QRCode(
