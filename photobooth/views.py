@@ -1,3 +1,5 @@
+from django.http import HttpResponse, Http404
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from .models import PhotoSession
 from .serializers import PhotoSessionSerializer
@@ -28,3 +30,18 @@ class PhotoSessionDetailView(generics.RetrieveAPIView):
     """
     queryset = PhotoSession.objects.all()
     serializer_class = PhotoSessionSerializer
+
+
+def download_composite(request, pk):
+    """
+    Serves the composite frame as a downloadable attachment.
+    """
+    session = get_object_or_404(PhotoSession, pk=pk)
+    
+    if not session.composite_frame:
+        raise Http404("Photo is still processing or does not exist.")
+        
+    # Open the file and set headers to force a file download
+    response = HttpResponse(session.composite_frame.read(), content_type="image/jpeg")
+    response['Content-Disposition'] = f'attachment; filename="gdg_photobooth_{session.id}.jpg"'
+    return response

@@ -11,7 +11,7 @@ def generate_session_qr_code(session_instance):
     and attaches it to the model instance.
     """
     base_url = getattr(settings, 'BASE_URL', 'http://127.0.0.1:8000')
-    download_url = f"{base_url}/download/{session_instance.id}/"
+    download_url = f"{base_url}/api/download/{session_instance.id}/"
     
     qr = qrcode.QRCode(
         version=1,
@@ -77,4 +77,3 @@ def generate_composite_frame(session_instance):
     file_name = f'composite_{session_instance.id}.jpg'
     session_instance.composite_frame.save(file_name, File(canvas), save=False)
     canvas.close()
-

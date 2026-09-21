@@ -1,3 +1,4 @@
+from django import views
 from django.urls import path
 from .views import PhotoSessionCreateView, PhotoSessionDetailView
 
@@ -7,4 +8,6 @@ urlpatterns = [
     
     # Endpoint for Review and Result Pages to retrieve session data via UUID
     path('sessions/<uuid:pk>/', PhotoSessionDetailView.as_view(), name='session-detail'),
+
+    path('download/<uuid:pk>/', views.download_composite, name='session-download'),
 ]
