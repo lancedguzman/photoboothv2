@@ -1,31 +1,40 @@
 <template>
   <div class="result-page">
-    <div class="header">
-      <h1 class="title">your</h1>
-      <img src="http://localhost:8000/media/assets/googley-logo.svg" alt="Googley" class="header-logo" />
-      <h1 class="title">picture is ready!</h1>
-    </div>
+    <!-- Background Clouds -->
+    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-top" alt="cloud" />
+    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-bottom" alt="cloud" />
 
-    <div v-if="isLoading" class="loading-state">
-      <h2 style="color: white;">Stitching your Googley moment...</h2>
-    </div>
+    <div class="content-wrapper">
+      <div class="header">
+        <h1 class="title">your</h1>
+        <img src="http://localhost:8000/media/assets/googley-logo.svg" alt="Googley" class="header-logo" />
+        <h1 class="title">picture is ready!</h1>
+      </div>
 
-    <div v-else class="result-layout">
-      <!-- QR Code Section -->
-      <div class="qr-section">
-        <div class="qr-placeholder">
-          <img v-if="sessionData?.qr_code" :src="sessionData.qr_code" alt="QR Code" class="final-img" />
+      <div v-if="isLoading" class="loading-state">
+        <h2 style="color: white;">Stitching your Googley moment...</h2>
+      </div>
+
+      <div v-else class="result-layout">
+        <!-- QR Code Section -->
+        <div class="qr-section">
+          <div class="qr-placeholder">
+            <img v-if="sessionData?.qr_code" :src="sessionData.qr_code" alt="QR Code" class="final-img" />
+          </div>
+          <p class="qr-text">get a digital copy</p>
         </div>
-        <p class="qr-text">get a digital copy</p>
+
+        <!-- Final Composite Frame from Backend -->
+        <div class="composite-frame">
+          <img v-if="sessionData?.composite_frame" :src="sessionData.composite_frame" alt="Composite Photo" class="final-img" />
+        </div>
       </div>
 
-      <!-- Final Composite Frame from Backend -->
-      <div class="composite-frame">
-         <img v-if="sessionData?.composite_frame" :src="sessionData.composite_frame" alt="Composite Photo" class="final-img" />
-      </div>
+      <!-- Updated Finish Button -->
+      <button class="home-btn" @click="goHome">
+        <img src="http://localhost:8000/media/assets/finish-button.svg" alt="Finish" class="finish-img" />
+      </button>
     </div>
-
-    <button class="btn home-btn" @click="goHome">Finish</button>
   </div>
 </template>
 
@@ -53,12 +62,10 @@ const fetchSessionData = async (id) => {
 }
 
 onMounted(() => {
-  // Grab the UUID passed from the Review page router push
   const sessionId = route.query.id
   if (sessionId) {
     fetchSessionData(sessionId)
   } else {
-    // Fallback if no ID is provided
     router.push('/')
   }
 })
@@ -69,34 +76,41 @@ const goHome = () => {
 </script>
 
 <style scoped>
-/* Keep existing header styles... */
 .result-page {
+  position: relative;
   min-height: 100vh;
   background-color: #5B8FFF;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  overflow: hidden;
 }
+.cloud {
+  position: absolute;
+  z-index: 1;
+  opacity: 0.8;
+}
+.cloud-top { top: 5%; right: 10%; width: 200px; }
+.cloud-bottom { bottom: 10%; left: 5%; width: 250px; }
+
+.content-wrapper {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .header {
   display: flex;
   align-items: center;
   gap: 15px;
   margin-bottom: 30px;
 }
-
-.title {
-  color: #FFD700;
-  font-size: 2rem;
-  margin: 0;
-}
-
+.title { color: #FFD700; font-size: 2rem; margin: 0; }
 .header-logo { width: 200px; }
-.result-layout {
-  display: flex;
-  gap: 40px;
-  align-items: center;
-}
+.result-layout { display: flex; gap: 40px; align-items: center; }
 
 .qr-section { text-align: center; }
 .qr-placeholder { width: 150px; height: 150px; background: white; border: 2px solid #333; overflow: hidden; display: flex; align-items: center; justify-content: center; }
@@ -104,18 +118,26 @@ const goHome = () => {
 
 .composite-frame {
   width: 600px;
-  /* Remove the background-image CSS property since we now display the full composite image directly */
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
 }
+.final-img { width: 100%; height: 100%; object-fit: contain; }
 
-.final-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+/* Updated Button Styles */
+.home-btn {
+  margin-top: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+  padding: 0;
 }
-
-.home-btn { margin-top: 40px; padding: 15px 40px; border-radius: 30px; cursor: pointer; background-color: white; color: #4CAF50; font-size: 1.2rem; border: none; font-weight: bold; }
+.home-btn:hover {
+  transform: scale(1.05);
+}
+.finish-img {
+  width: 200px;
+}
 </style>

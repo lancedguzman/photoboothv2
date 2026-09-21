@@ -1,13 +1,12 @@
 <template>
   <div class="review-page">
-    <img src="http://localhost:8000/media/assets/cloud-3.svg" class="cloud cloud-bg" alt="cloud" />
+    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-bg" alt="cloud" />
 
     <div class="content-wrapper">
       <h1 class="header-text">Review Your Photos</h1>
 
       <div class="photos-grid">
         <div v-for="index in 4" :key="index" class="photo-preview">
-          <!-- Display image if it exists in the store -->
           <img v-if="photoStore.photos[index - 1]" :src="photoStore.photos[index - 1]" class="preview-img" />
           <p v-else>No Photo</p>
         </div>
@@ -37,7 +36,6 @@ const retakeAll = () => {
   router.push('/capture')
 }
 
-// Converts base64 to a Blob for uploading
 const urlToBlob = async (url) => {
   const response = await fetch(url)
   return await response.blob()
@@ -49,7 +47,6 @@ const submitToBackend = async () => {
   const formData = new FormData()
 
   try {
-    // Convert base64 store images to Blob files and append to form
     for (let i = 0; i < 4; i++) {
       if (photoStore.photos[i]) {
         const blob = await urlToBlob(photoStore.photos[i])
@@ -57,7 +54,6 @@ const submitToBackend = async () => {
       }
     }
 
-    // POST to the Django backend
     const response = await fetch('http://localhost:8000/api/sessions/create/', {
       method: 'POST',
       body: formData
@@ -66,8 +62,6 @@ const submitToBackend = async () => {
     if (!response.ok) throw new Error('Failed to upload photos')
 
     const data = await response.json()
-
-    // Push to Result page, passing the generated session UUID in the URL
     router.push(`/result?id=${data.id}`)
 
   } catch (error) {
@@ -122,34 +116,10 @@ const submitToBackend = async () => {
   overflow: hidden;
   box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
 }
-.preview-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.btn {
-  padding: 15px 30px;
-  margin: 0 10px;
-  font-size: 18px;
-  border-radius: 30px;
-  cursor: pointer;
-  border: none;
-  font-weight: bold;
-  transition: transform 0.2s;
-}
-.btn:hover:not(:disabled) {
-  transform: scale(1.05);
-}
-.btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-.secondary {
-  background: white;
-  color: #EA4335;
-}
-.primary {
-  background: #34A853;
-  color: white;
-}
+.preview-img { width: 100%; height: 100%; object-fit: cover; }
+.btn { padding: 15px 30px; margin: 0 10px; font-size: 18px; border-radius: 30px; cursor: pointer; border: none; font-weight: bold; transition: transform 0.2s; }
+.btn:hover:not(:disabled) { transform: scale(1.05); }
+.btn:disabled { opacity: 0.7; cursor: not-allowed; }
+.secondary { background: white; color: #EA4335; }
+.primary { background: #34A853; color: white; }
 </style>

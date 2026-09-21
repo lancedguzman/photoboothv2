@@ -1,12 +1,27 @@
 <template>
   <div class="capture-page">
-    <img src="http://localhost:8000/media/assets/cloud-2.svg" class="cloud cloud-top" alt="cloud" />
+    <!-- Top Left GDG Logo -->
+    <img src="http://localhost:8000/media/assets/gdg-logo.svg" class="decor gdg-logo" alt="GDG Logo" />
+
+    <!-- Background Clouds -->
+    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-tl" alt="cloud" />
+    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-tr" alt="cloud" />
+    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-ml" alt="cloud" />
+    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-mr" alt="cloud" />
 
     <div class="main-layout">
       <!-- Main camera view -->
       <div class="camera-feed">
         <video ref="videoElement" autoplay playsinline class="video-stream" :class="{ flash: isFlashing }"></video>
-        <h1 v-if="isCountingDown" class="countdown-text">{{ countdownNumber }}</h1>
+
+        <!-- Dynamic Cloud SVG Countdown -->
+        <img
+          v-if="isCountingDown && countdownNumber > 0"
+          :src="`http://localhost:8000/media/assets/cloud-${countdownNumber}.svg`"
+          class="countdown-image"
+          alt="countdown"
+        />
+
         <h2 v-if="!isCameraActive" class="camera-status">{{ cameraStatusText }}</h2>
       </div>
 
@@ -19,9 +34,18 @@
       </div>
     </div>
 
+    <!-- Bottom Left Decorations -->
+    <img src="http://localhost:8000/media/assets/blue-box.svg" class="decor blue-box" alt="blue box" />
+    <img src="http://localhost:8000/media/assets/googley-laptop.svg" class="decor laptop-robot" alt="laptop robot" />
+    <img src="http://localhost:8000/media/assets/yellow-box.svg" class="decor yellow-box-robot" alt="yellow box robot" />
+
+    <!-- Bottom Right Decoration -->
+    <img src="http://localhost:8000/media/assets/blimp.svg" class="decor blimp" alt="blimp" />
+
+    <!-- Floating Capture Button -->
     <div class="controls">
       <button class="capture-btn" @click="startSequence" :disabled="isSequenceActive">
-        <img src="http://localhost:8000/media/assets/capture-button.svg" alt="Capture" />
+        <img src="http://localhost:8000/media/assets/capture-button.svg" alt="Capture" class="capture-img" />
       </button>
     </div>
 
@@ -32,22 +56,22 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
-import { usePhotoStore } from '../stores/photoStore' // Import the store
+import { usePhotoStore } from '../stores/photoStore'
 
 const router = useRouter()
-const photoStore = usePhotoStore() // Initialize store
+const photoStore = usePhotoStore()
 
 // Refs
 const videoElement = ref(null)
 const canvasElement = ref(null)
 const isCameraActive = ref(false)
-const cameraStatusText = ref('Requesting camera access...')
+const cameraStatusText = ref('live view from camera')
 let mediaStream = null
 
 // Sequence State
 const isSequenceActive = ref(false)
 const isCountingDown = ref(false)
-const countdownNumber = ref(5)
+const countdownNumber = ref(3)
 const isFlashing = ref(false)
 const currentShotIndex = ref(0)
 
@@ -85,11 +109,11 @@ const startSequence = async () => {
   if (isSequenceActive.value) return
   isSequenceActive.value = true
   currentShotIndex.value = 0
-  photoStore.clearPhotos() // Clear old photos in the store
+  photoStore.clearPhotos()
 
   for (let i = 0; i < 4; i++) {
     currentShotIndex.value = i
-    await runCountdown(i === 0 ? 5 : 3)
+    await runCountdown(3)
     takePicture(i)
   }
 
@@ -128,7 +152,6 @@ const takePicture = (index) => {
   isFlashing.value = true
   setTimeout(() => isFlashing.value = false, 150)
 
-  // Save base64 image data directly to Pinia store
   const imageData = canvas.toDataURL('image/jpeg')
   photoStore.setPhoto(index, imageData)
 }
@@ -143,24 +166,39 @@ const retakeSingle = async (index) => {
 </script>
 
 <style scoped>
-/* Keep existing layout styles */
 .capture-page {
   position: relative;
   height: 100vh;
   background-color: #5B8FFF;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 40px;
   overflow: hidden;
 }
-.cloud-top {
+
+/* Background Clouds */
+.cloud {
   position: absolute;
-  top: 5%;
-  left: 30%;
-  width: 150px;
-  opacity: 0.8;
+  opacity: 0.9;
   z-index: 1;
 }
+.cloud-tl { top: -20px; left: 10%; width: 250px; }
+.cloud-tr { top: 0; right: 25%; width: 180px; }
+.cloud-ml { top: 30%; left: -50px; width: 200px; }
+.cloud-mr { top: 40%; right: -20px; width: 220px; }
+
+/* Absolute Decorative Assets */
+.decor {
+  position: absolute;
+  z-index: 15;
+}
+.gdg-logo { top: 20px; left: 20px; width: 80px; }
+.blue-box { bottom: -10px; left: -10px; width: 180px; }
+.laptop-robot { bottom: 80px; left: 20px; width: 150px; mix-blend-mode: screen; /* Helps hide black jpeg background */ }
+.yellow-box-robot { bottom: 10px; left: 180px; width: 160px; mix-blend-mode: screen; }
+.blimp { bottom: 20px; right: 20px; width: 160px; }
+
+/* Layout adjustments to match Figma */
 .main-layout {
   display: flex;
   flex: 1;
@@ -168,12 +206,15 @@ const retakeSingle = async (index) => {
   justify-content: center;
   align-items: center;
   z-index: 10;
+  padding-bottom: 60px; /* Leaves room for the floating button */
 }
+
+/* Wider Camera Feed Shape */
 .camera-feed {
-  flex: 0.6;
-  aspect-ratio: 4 / 3;
-  max-height: 65vh;
-  background: black;
+  flex: 0.75;
+  aspect-ratio: 16 / 10;
+  max-height: 70vh;
+  background: white; /* White background shows until camera loads */
   border-radius: 20px;
   display: flex;
   justify-content: center;
@@ -190,50 +231,47 @@ const retakeSingle = async (index) => {
   transition: filter 0.1s;
 }
 
-/* Flash effect */
-.flash {
-  filter: brightness(2) contrast(1.5);
-}
+.flash { filter: brightness(2) contrast(1.5); }
 
-/* Countdown Overlay */
-.countdown-text {
+.countdown-image {
   position: absolute;
-  font-size: 8rem;
-  color: white;
-  text-shadow: 0px 4px 15px rgba(0,0,0,0.5);
+  width: 250px;
   z-index: 5;
-  margin: 0;
+  filter: drop-shadow(0px 4px 15px rgba(0,0,0,0.5));
 }
 
 .camera-status {
   position: absolute;
-  color: white;
+  color: black;
+  font-family: 'Google Sans Code', monospace;
+  font-size: 2rem;
+  font-weight: bold;
   z-index: 2;
 }
+
+/* Sidebar Styling */
 .thumbnail-sidebar {
-  flex: 0.15;
+  flex: 0.2;
   display: flex;
   flex-direction: column;
   gap: 15px;
   height: 100%;
-  max-height: 65vh;
+  max-height: 70vh;
 }
 .thumbnail-slot {
   flex: 1;
   background: white;
-  border-radius: 10px;
+  border-radius: 15px;
   position: relative;
   aspect-ratio: 4 / 3;
-  overflow: hidden; /* Ensure thumbnail image doesn't break border radius */
+  overflow: hidden;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
 }
-
-/* Thumbnail Image Display */
 .thumbnail-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-
 .refresh-icon {
   position: absolute;
   top: 5px;
@@ -250,17 +288,24 @@ const retakeSingle = async (index) => {
   cursor: pointer;
   font-size: 1rem;
 }
+
+/* Floating Controls */
 .controls {
-  text-align: center;
-  margin-top: 10px;
-  margin-bottom: 20px;
-  z-index: 10;
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
 }
 .capture-btn {
   background: none;
   border: none;
   cursor: pointer;
   transition: transform 0.2s;
+  padding: 0;
+}
+.capture-img {
+  width: 220px;
 }
 .capture-btn:hover:not(:disabled) {
   transform: scale(1.05);
