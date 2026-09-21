@@ -16,13 +16,16 @@
 
         <!-- Dynamic Cloud SVG Countdown -->
         <img
-          v-if="isCountingDown && countdownNumber > 0"
+          v-if="isCountingDown && countdownNumber > 0 && !isSubmitting"
           :src="`http://localhost:8000/media/assets/cloud-${countdownNumber}.svg`"
           class="countdown-image"
           alt="countdown"
         />
 
-        <h2 v-if="!isCameraActive" class="camera-status">{{ cameraStatusText }}</h2>
+        <!-- Loading state overlay during upload -->
+        <h2 v-if="isSubmitting" class="camera-status processing-text">Processing your photos...</h2>
+
+        <h2 v-if="!isCameraActive && !isSubmitting" class="camera-status">{{ cameraStatusText }}</h2>
       </div>
 
       <!-- Sidebar for thumbnails reading from Pinia store -->
@@ -42,10 +45,20 @@
     <!-- Bottom Right Decoration -->
     <img src="http://localhost:8000/media/assets/blimp.svg" class="decor blimp" alt="blimp" />
 
-    <!-- Floating Capture Button -->
+    <!-- Floating Capture Button & Finish Button -->
     <div class="controls">
       <button class="capture-btn" @click="startSequence" :disabled="isSequenceActive">
         <img src="http://localhost:8000/media/assets/capture-button.svg" alt="Capture" class="capture-img" />
+      </button>
+
+      <!-- Updated Finish Button using SVG and awaiting user input[cite: 59] -->
+      <button
+        v-if="!isSequenceActive && photoStore.photos.some(p => p)"
+        class="finish-btn"
+        @click="finishSession"
+        :disabled="isSubmitting"
+      >
+        <img src="http://localhost:8000/media/assets/finish-button.svg" alt="Finish" class="finish-img" />
       </button>
     </div>
 
@@ -73,6 +86,7 @@ const isSequenceActive = ref(false)
 const isCountingDown = ref(false)
 const countdownNumber = ref(3)
 const isFlashing = ref(false)
+const isSubmitting = ref(false)
 const currentShotIndex = ref(0)
 
 const startCamera = async () => {
@@ -112,14 +126,22 @@ const startSequence = async () => {
   photoStore.clearPhotos()
 
   for (let i = 0; i < 4; i++) {
+    // Break the automated loop if the user interrupts it to retake a photo[cite: 59]
+    if (!isSequenceActive.value) return
+
     currentShotIndex.value = i
     await runCountdown(3)
+
+    // Check again in case it was interrupted during the 3-second countdown[cite: 59]
+    if (!isSequenceActive.value) return
+
     takePicture(i)
   }
 
-  setTimeout(() => {
-    router.push('/review')
-  }, 1500)
+  // End the sequence without automatically submitting to ResultPage[cite: 59]
+  if (isSequenceActive.value) {
+    isSequenceActive.value = false
+  }
 }
 
 const runCountdown = (seconds) => {
@@ -163,6 +185,43 @@ const retakeSingle = async (index) => {
   await runCountdown(3)
   takePicture(index)
 }
+
+// Converts base64 to a Blob for uploading
+const urlToBlob = async (url) => {
+  const response = await fetch(url)
+  return await response.blob()
+}
+
+const finishSession = async () => {
+  isSubmitting.value = true
+  const formData = new FormData()
+
+  try {
+    for (let i = 0; i < 4; i++) {
+      if (photoStore.photos[i]) {
+        const blob = await urlToBlob(photoStore.photos[i])
+        formData.append(`photo_${i + 1}`, blob, `photo_${i + 1}.jpg`)
+      }
+    }
+
+    const response = await fetch('http://localhost:8000/api/sessions/create/', {
+      method: 'POST',
+      body: formData
+    })
+
+    if (!response.ok) throw new Error('Failed to upload photos')
+
+    const data = await response.json()
+    router.push(`/result?id=${data.id}`)
+
+  } catch (error) {
+    console.error("Error submitting to backend:", error)
+    alert("There was an error generating your photos. Please try again.")
+    isSequenceActive.value = false
+  } finally {
+    isSubmitting.value = false
+  }
+}
 </script>
 
 <style scoped>
@@ -194,11 +253,11 @@ const retakeSingle = async (index) => {
 }
 .gdg-logo { top: 20px; left: 20px; width: 80px; }
 .blue-box { bottom: -10px; left: -10px; width: 180px; }
-.laptop-robot { bottom: 80px; left: 20px; width: 150px; mix-blend-mode: screen; /* Helps hide black jpeg background */ }
+.laptop-robot { bottom: 80px; left: 20px; width: 150px; mix-blend-mode: screen; }
 .yellow-box-robot { bottom: 10px; left: 180px; width: 160px; mix-blend-mode: screen; }
 .blimp { bottom: 20px; right: 20px; width: 160px; }
 
-/* Layout adjustments to match Figma */
+/* Layout adjustments */
 .main-layout {
   display: flex;
   flex: 1;
@@ -206,7 +265,7 @@ const retakeSingle = async (index) => {
   justify-content: center;
   align-items: center;
   z-index: 10;
-  padding-bottom: 60px; /* Leaves room for the floating button */
+  padding-bottom: 60px;
 }
 
 /* Wider Camera Feed Shape */
@@ -214,7 +273,7 @@ const retakeSingle = async (index) => {
   flex: 0.75;
   aspect-ratio: 16 / 10;
   max-height: 70vh;
-  background: white; /* White background shows until camera loads */
+  background: white;
   border-radius: 20px;
   display: flex;
   justify-content: center;
@@ -248,6 +307,8 @@ const retakeSingle = async (index) => {
   font-weight: bold;
   z-index: 2;
 }
+
+.processing-text { background: rgba(255, 255, 255, 0.85); padding: 10px 30px; border-radius: 30px; z-index: 6; }
 
 /* Sidebar Styling */
 .thumbnail-sidebar {
@@ -296,6 +357,9 @@ const retakeSingle = async (index) => {
   left: 50%;
   transform: translateX(-50%);
   z-index: 25;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 .capture-btn {
   background: none;
@@ -311,6 +375,25 @@ const retakeSingle = async (index) => {
   transform: scale(1.05);
 }
 .capture-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Updated Finish Button Styles[cite: 59] */
+.finish-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+  padding: 0;
+}
+.finish-img {
+  width: 200px;
+}
+.finish-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+.finish-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
