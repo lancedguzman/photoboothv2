@@ -1,13 +1,13 @@
-from django import views
 from django.urls import path
-from .views import PhotoSessionCreateView, PhotoSessionDetailView
+from . import views  # Import the local views.py file
 
 urlpatterns = [
     # Endpoint for the Capture Page to upload the 4 photos
-    path('sessions/create/', PhotoSessionCreateView.as_view(), name='session-create'),
+    path('sessions/create/', views.PhotoSessionCreateView.as_view(), name='session-create'),
     
     # Endpoint for Review and Result Pages to retrieve session data via UUID
-    path('sessions/<uuid:pk>/', PhotoSessionDetailView.as_view(), name='session-detail'),
+    path('sessions/<uuid:pk>/', views.PhotoSessionDetailView.as_view(), name='session-detail'),
 
+    # Download endpoint mapped to your local download_composite function
     path('download/<uuid:pk>/', views.download_composite, name='session-download'),
 ]
