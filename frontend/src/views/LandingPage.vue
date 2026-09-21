@@ -1,16 +1,22 @@
 <template>
   <div class="landing-page">
+    <!-- Top Left GDG Logo -->
+    <img src="http://localhost:8000/media/assets/gdg-logo.svg" class="gdg-logo" alt="GDG Logo" />
+
     <!-- Background Clouds -->
-    <img src="http://localhost:8000/media/assets/cloud-1.svg" class="cloud cloud-1" alt="cloud" />
-    <img src="http://localhost:8000/media/assets/cloud-2.svg" class="cloud cloud-2" alt="cloud" />
-    <img src="http://localhost:8000/media/assets/cloud-3.svg" class="cloud cloud-3" alt="cloud" />
+    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-tl" alt="cloud" />
+    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-tr" alt="cloud" />
+    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-mr" alt="cloud" />
+    <img src="http://localhost:8000/media/assets/cloud.svg" class="cloud cloud-bl" alt="cloud" />
 
+    <!-- Center Title Image -->
     <div class="content-wrapper">
-      <h1 class="title">capture your</h1>
-      <img src="http://localhost:8000/media/assets/googley-logo.svg" alt="Googley Logo" class="logo" />
-      <h1 class="title">moment!</h1>
+      <img src="http://localhost:8000/media/assets/title.svg" class="main-title" alt="Capture your Googley moment!" />
+    </div>
 
-      <!-- Replaced standard button with custom SVG button -->
+    <!-- Bottom Right Controls -->
+    <div class="controls-wrapper">
+      <img src="http://localhost:8000/media/assets/googley-left.svg" class="android-mascot" alt="Android Mascot" />
       <button class="start-btn" @click="goToCapture">
         <img src="http://localhost:8000/media/assets/start-button.svg" alt="Start" />
       </button>
@@ -36,41 +42,74 @@ const goToCapture = () => {
   align-items: center;
   height: 100vh;
   background-color: #5B8FFF;
-  text-align: center;
   overflow: hidden;
 }
+
+/* Top Left Logo Layout */
+.gdg-logo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 90px;
+  z-index: 10;
+}
+
+/* Center Layout */
 .content-wrapper {
   z-index: 10;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
+  width: 100%;
 }
-.title {
-  color: #FFD700;
-  font-family: sans-serif;
-  margin: 0;
-  font-size: 2rem;
+
+.main-title {
+  width: 80%;
+  max-width: 850px;
 }
-.logo {
-  width: 300px;
-  margin: 10px 0;
+
+/* Bottom Right Controls Layout */
+.controls-wrapper {
+  position: absolute;
+  bottom: 8%;
+  right: 12%;
+  display: flex;
+  align-items: flex-end;
+  z-index: 15;
 }
+
+.android-mascot {
+  width: 110px;
+  transform: translateY(15px); /* Creates the peeking effect */
+  margin-right: -15px; /* Pulls the mascot slightly behind/into the start button */
+  z-index: 16;
+}
+
 .start-btn {
   background: none;
   border: none;
   cursor: pointer;
-  margin-top: 20px;
   transition: transform 0.2s;
+  width: 220px;
+  z-index: 15;
 }
+
+.start-btn img {
+  width: 100%;
+}
+
 .start-btn:hover {
   transform: scale(1.05);
 }
+
+/* Decorative Background Clouds */
 .cloud {
   position: absolute;
   z-index: 1;
-  opacity: 0.9;
 }
-.cloud-1 { top: 10%; left: 5%; width: 150px; }
-.cloud-2 { top: 20%; right: 10%; width: 200px; }
-.cloud-3 { bottom: 15%; left: 20%; width: 180px; }
+
+.cloud-tl { top: 12%; left: 5%; width: 280px; }
+.cloud-tr { top: -5%; right: 5%; width: 200px; }
+.cloud-mr { top: 45%; right: -5%; width: 140px; }
+.cloud-bl { bottom: -8%; left: 10%; width: 350px; }
 </style>
